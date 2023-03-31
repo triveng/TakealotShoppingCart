@@ -8,7 +8,7 @@ while (true)
   Console.WriteLine("Please choose one of the options: ");
   Console.WriteLine("1. Add Product 'A' in the cart");
   Console.WriteLine("2. Add Product 'B' in the cart");
-  Console.WriteLine("3. Add Product 'C'in the cart");
+  Console.WriteLine("3. Add Product 'C' in the cart");
   Console.WriteLine("4. Add Product 'D' in the cart");
   Console.WriteLine("5. Checkout & print receipt");
   Console.WriteLine("6. Quit");

@@ -1,6 +1,6 @@
 using TakealotShoppingCart.Models;
 
-var cart = new Cart();
+var cart = new CartHelper();
 int input;
 
 while (true)

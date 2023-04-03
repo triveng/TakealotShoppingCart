@@ -1,50 +1,76 @@
-﻿
+﻿using static TakealotShoppingCart.Models.CartHelper;
+
 namespace TakealotShoppingCart.Models
 {
+  public class CartHelper
+  {
+    private readonly Cart _cart;
+
+    public CartHelper()
+    {
+      _cart = new Cart();
+    }
+
+    public void AddProduct(string productKey)
+    {
+      if (!Products.Dictionary.ContainsKey(productKey))
+      {
+        throw new ArgumentException($"Product with name {productKey} doesn't exist.", nameof(productKey));
+      }
+
+      if (!_cart.Products.ContainsKey(Products.Dictionary[productKey]))
+      {
+        _cart.Products.Add(Products.Dictionary[productKey], 0);
+      }
+
+      _cart.Products[Products.Dictionary[productKey]] += 1;
+
+      CalculateTotal();
+    }
+
+    public void RemoveProduct()
+    {
+      // TODO
+    }
+
+    public Cart GetCart()
+    {
+      return _cart;
+    }
+
+    public Cart Checkout()
+    {
+      _cart.Status = CartStatus.PendingPayment;
+      return GetCart();
+    }
+
+    private void CalculateTotal()
+    {
+      _cart.TotalAmountInCart = 0;
+      foreach (var cartProduct in _cart.Products)
+      {
+        _cart.TotalAmountInCart += cartProduct.Key.GetPrice(cartProduct.Value);
+      }
+    }
+  }
+
   public class Cart
   {
-    private readonly Dictionary<string, int> productCountByName;
-
     public Cart()
     {
-      productCountByName = new Dictionary<string, int>();
+      Products = new Dictionary<Product, int>();
+      Status = CartStatus.New;
     }
 
-    public void AddProduct(string productName)
-    {
-      if (!Products.Dictionary.ContainsKey(productName))
-      {
-        throw new ArgumentException($"Product with name {productName} doesn't exist.", nameof(productName));
-      }
+    public Dictionary<Product, int> Products { get; set; }
+    public decimal TotalAmountInCart { get; set; }
+    public CartStatus Status { get; set; }
+  }
 
-      if (!productCountByName.ContainsKey(productName))
-      {
-        productCountByName.Add(productName, 0);
-      }
-
-      productCountByName[productName] += 1;
-    }
-
-    public decimal Checkout()
-    {
-      decimal totalPrice = 0;
-
-      if (productCountByName.Count == 0)
-      {
-        throw new ArgumentNullException("The cart must contain at least one product", nameof(productCountByName));
-      }
-
-      foreach (var productNameCountPair in productCountByName)
-      {
-        var product = Products.Dictionary[productNameCountPair.Key];
-        var subtotal = product.GetPrice(productNameCountPair.Value);
-        totalPrice += subtotal;
-        Console.WriteLine($"The number of Product {productNameCountPair.Key} is: {productNameCountPair.Value}");
-        Console.WriteLine($"The subtotal of Product {productNameCountPair.Key} is: {subtotal}");
-        Console.WriteLine("");
-      }
-
-      return totalPrice;
-    }
+  public enum CartStatus
+  {
+    New,
+    PendingPayment,
+    Paid
   }
 }

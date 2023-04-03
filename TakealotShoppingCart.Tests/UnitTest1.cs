@@ -1,3 +1,4 @@
+using System;
 using TakealotShoppingCart.Models;
 
 namespace TakealotShoppingCart.Tests
@@ -164,6 +165,19 @@ namespace TakealotShoppingCart.Tests
       // Assert
       Assert.IsNotEmpty(cart.Products);
       Assert.AreEqual(225, cart.TotalAmountInCart);
+      Assert.AreEqual(CartStatus.New, cart.Status);
+    }
+
+    [Test]
+    public void Cart_Is_Empty()
+    {
+      //ACT
+      var cartHelper = new CartHelper();
+      var cart = cartHelper.GetCart();
+
+      // Assert
+      Assert.IsEmpty(cart.Products);
+      Assert.AreEqual(0, cart.TotalAmountInCart);
       Assert.AreEqual(CartStatus.New, cart.Status);
     }
   }
